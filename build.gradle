@@ -1,0 +1,180 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archivesBaseName
+}
+
+repositories {
+	// Fabric maven + Mojang are added automatically by Loom.
+
+	// Needed for dependencies not published to Fabric/Mojang maven, e.g.
+	// org.sejda.imageio:webp-imageio below. Without this, Gradle only has
+	// the Loom-added repos to search and 404s trying Mojang's library host.
+	mavenCentral()
+
+	// GeckoLib 5.5.3 for MC 26.2 isn't published on GeckoLib's Cloudsmith
+	// Maven yet (confirmed missing as of writing — CurseForge lists it,
+	// but the repo 404s on both the POM and the jar). Once GeckoLib
+	// finishes publishing it, uncomment this block and remove the
+	// libs/ dependency + flatDir repo below instead.
+	//
+	// exclusiveContent {
+	// 	forRepository {
+	// 		maven {
+	// 			name = 'GeckoLib'
+	// 			url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+	// 			metadataSources {
+	// 				mavenPom()
+	// 				artifact()
+	// 			}
+	// 		}
+	// 	}
+	// 	filter {
+	// 		includeGroup('software.bernie.geckolib')
+	// 	}
+	// }
+
+	// Temporary local fallback: put the manually-downloaded GeckoLib jar
+	// (from CurseForge/Modrinth) in libs/ using the filename below.
+	flatDir {
+		dirs 'libs'
+	}
+}
+
+// Expected local jar: libs/geckolib-fabric-${minecraft_version}-${geckolib_version}.jar
+// e.g. libs/geckolib-fabric-26.2-5.5.3.jar
+def geckolibJarName = "geckolib-fabric-${project.minecraft_version}-${project.geckolib_version}.jar"
+def geckolibJarFile = file("libs/${geckolibJarName}")
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// 26.2 itibarıyla javax.annotation.Nullable artık Minecraft'ın
+	// classpath'ine üzerinden gelmiyor (Guava'nın jsr305'e geçişli
+	// bağımlılığı kalktı) — açıkça eklememiz gerekiyor.
+	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+
+	if (geckolibJarFile.exists()) {
+		implementation files(geckolibJarFile)
+	} else {
+		logger.warn("!! GeckoLib jar not found at libs/${geckolibJarName} — download it from CurseForge/Modrinth (GeckoLib Fabric ${project.minecraft_version}, version ${project.geckolib_version}) and place it there.")
+	}
+
+	// Jade tooltip compat (compat.jade package) — soft dependency only, so
+	// compileOnly rather than implementation: Jade is never bundled into
+	// our jar and never required to launch the game, it's just an optional
+	// integration that lights up if the player also has Jade installed.
+	// Same local-jar fallback story as GeckoLib above: not yet on a maven
+	// we can reach from this sandbox, so it's a manually-placed jar in
+	// libs/ picked up via the flatDir repo declared above.
+	def jadeJarFile = file("libs/Jade-mc26_2-Fabric-26_2_9.jar")
+	if (jadeJarFile.exists()) {
+		compileOnly files(jadeJarFile)
+	} else {
+		logger.warn("!! Jade jar not found at libs/Jade-mc26_2-Fabric-26_2_9.jar — compat.jade will fail to compile without it. Download Jade (Fabric, MC 26.2) and place it there.")
+	}
+
+	// WEBP decode desteği — stb_image (NativeImage.read) WEBP açamıyor,
+	// bu yüzden "resim adresini kopyala" ile alınan Google/CDN linklerinin
+	// çoğu (genelde webp döner) "decode edilemedi" hatası veriyordu. Bu
+	// kütüphane saf ImageIO SPI'si olarak devreye giriyor (bkz.
+	// WFImageDownloader#decodeWebpFallback) ve `include` ile mod jar'ının
+	// İÇİNE gömülüyor — oyuncunun ayrıca bir şey kurmasına gerek yok.
+	// NOT: Sürüm numarasını (0.1.6) client.jar ile değil, Maven Central'daki
+	// en güncel yayınla doğrulayın — bu sandbox'ta internet erişimi
+	// olmadığından derleme burada test edilemedi.
+	implementation "org.sejda.imageio:webp-imageio:0.1.6"
+	include "org.sejda.imageio:webp-imageio:0.1.6"
+
+	// Fabric Loader JUnit: lets us run real JUnit tests against the live, bootstrapped
+	// Minecraft registries from `./gradlew test` / `./gradlew build` (no client/server
+	// window needed) — this is what WfBuildRegistryValidatorTest uses to check every
+	// styles/material_themes/decorations block id in CI. See its class javadoc.
+	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+}
+
+test {
+	useJUnitPlatform()
+	// WfBuildRegistryValidatorTest bootstraps the real Minecraft registries
+	// (SharedConstants.tryDetectVersion() + Bootstrap.bootStrap()) to check every
+	// wfbuild style/material_theme/decoration block id — that bootstrap is slow
+	// (it's most of what makes ./gradlew build take minutes). Kept out of the
+	// default test/build run so day-to-day builds stay fast; run it explicitly
+	// with `./gradlew validateWfBuild` (e.g. before committing new/edited
+	// styles, material_themes, or decorations json).
+	filter {
+		excludeTestsMatching "com.worldforge.wfbuild.validation.WfBuildRegistryValidatorTest"
+		// WfBuildRegistryValidatorTest is the only test class and is excluded above,
+		// so the default test run has nothing to execute. Without this, Gradle's
+		// test task fails the build with "No tests found for given includes".
+		failOnNoMatchingTests = false
+	}
+}
+
+tasks.register('validateWfBuild', Test) {
+	group = 'verification'
+	description = 'Runs WfBuildRegistryValidatorTest only: bootstraps the real Minecraft registries and checks every wfbuild style/material_theme/decoration block id. Slow — not part of build/test, run manually.'
+	useJUnitPlatform()
+	testClassesDirs = test.testClassesDirs
+	classpath = test.classpath
+	filter {
+		includeTestsMatching "com.worldforge.wfbuild.validation.WfBuildRegistryValidatorTest"
+	}
+	testLogging {
+		events "passed", "skipped", "failed"
+		exceptionFormat = "full"
+		showStandardStreams = true
+	}
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+	it.options.encoding = 'UTF-8'
+}
+
+java {
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+	// Filename only: keeps "WorldForge.jar" instead of the default
+	// "WorldForge-${version}.jar". The real version still lives in
+	// fabric.mod.json (via processResources below) and mod_version in
+	// gradle.properties — this only affects the built file's name.
+	archiveVersion.set('')
+
+	def projectName = project.name
+	inputs.property "projectName", projectName
+	from("LICENSE") {
+		rename { "${it}_$projectName" }
+	}
+}
+
+publishing {
+	publications {
+		create("mavenJava", MavenPublication) {
+			from components.java
+		}
+	}
+	repositories {
+		// Configure publish targets here if needed.
+	}
+}
