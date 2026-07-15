@@ -118,7 +118,7 @@ Designed with large survival worlds in mind.
 - Fabric Loader 0.19.3+
 - Fabric API
 - GeckoLib 5.5.3
-- Java 21
+- Java 25
 
 ---
 
