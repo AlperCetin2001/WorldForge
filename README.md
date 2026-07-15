@@ -1,264 +1,145 @@
-# WorldForge v2.0.0
+# WorldForge
 
-**Author:** Doshu  
-**Website:** https://doshu.gamer.gd  
-**Target:** Minecraft 26.2 · Fabric Loader 0.19.3 · Java 25  
-**Fabric API:** 0.154.0+26.2 · Loom 1.17.13
+A large survival-focused Minecraft Fabric mod that introduces automation, advanced storage, smart entities, upgraded machines, utilities, and quality-of-life improvements while preserving vanilla progression.
 
 ---
 
-## Overview
+# Features
 
-WorldForge is a large survival-friendly toolkit mod built around a WorldEdit-style region editor (select, fill, break — with full economy integration, pause/resume, chunk safety, and a WorkChest system), plus a wide set of standalone feature modules layered on top.
+## Smart Robots
 
----
+### Farmer Robot
+- Harvests crops
+- Replants automatically
+- Uses its own inventory
+- Survival balanced AI
 
-## Feature Overview
+### CatBot
+- Companion entity
+- Multiple forms
+- Cosmetic customization
+- Smart behaviors
 
-| Module | What it does |
-|--------|--------------|
-| **Region Editing** | `/wfpos1`/`/wfpos2` selection, `/wffill`, `/wfbreak`, `/wfclear`, undo, blueprint pause/resume, chunk-safe, economy-priced |
-| **WorkChest / WFVault / MegaChest** | Auto-spawning chests for bulk jobs; searchable multi-page WFVault storage; multiblock MegaChest (L/T/+ footprints, one shared lid-opening animation across the whole structure) for large-volume drops |
-| **CatBot** | GeckoLib-animated companion with cat/humanoid form switching, `/wfcat gui` customization (form, gender, hair, size, live 3D preview), cooldown-based respawn |
-| **FarmerRobot** | Autonomous crop harvesting: smart farm detection (BFS flood-fill), incremental farm-cache updates, seed reserve management, crop priority, day/night & weather-aware behavior |
-| **wfbuild** | Procedural structure/building generator with 500+ decoration, style, and structure-type variants (data-driven JSON), live ghost-block hologram previews during construction |
-| **Furnaces** | 6-tier furnace line (Copper → Netherite) with per-tier cooking speed multipliers and multi-lane GUIs |
-| **VeinMiner / VeinAxe / VeinTool / Excavator / Omnitool** | Tiered mining tools (Copper → Netherite/Emerald) with vein-following and area-mining, live line-outline previews before breaking |
-| **Grook** | Leaf/foliage clearing tool with configurable reach and max-leaves cap |
-| **Magnet Link** | Remote item transfer between chests/players |
-| **Image Placement** | Downloads an internet image and places it as in-world map art |
-| **Litematica Support** | Import/export schematics compatible with Litematica |
-| **Tutorial Book** | Clickable, categorized in-game command reference (`/wf...` commands) with bilingual hover text |
-| **Config GUI** | In-game key-bound config screen; every optional module toggleable/tunable live via `/wfconfig`, persisted to `worldforge_features.json` |
-| **Localization** | English, Turkish, German, French, Spanish |
+### Magnet Carrier
+- Automatically transports items
+- Integrates with storage systems
 
 ---
 
-## Commands
+# XP Collector
 
-| Command | Description |
-|---------|-------------|
-| `/wfpos1` | Set Pos1 at the **block you're looking at** (raycast) |
-| `/wfpos2` | Set Pos2 at the **block you're looking at** |
-| `/wfpos1 <x> <y> <z>` | Set Pos1 at explicit coordinates |
-| `/wfpos2 <x> <y> <z>` | Set Pos2 at explicit coordinates |
-| `/wfselection` | Show current selection info |
-| `/wfclear` | Clear all blocks in selection (fill with air, no drops) |
-| `/wffill <block>` | Fill selection with a block (uses **WorkChest**) |
-| `/wfbreak` | **Break** all blocks in selection (drops go to **WorkChest**) |
-| `/wfcancel` | Cancel active job (saves blueprint) |
-| `/wfresume` | Resume from saved blueprint |
-| `/wfblueprint info` | View saved blueprint status |
-| `/wfblueprint clear` | Delete saved blueprint |
-| `/wffluid preserve\|dry` | Fluid handling mode |
-| `/wfchest` | Show WorkChest location |
-| `/wfchest remove` | Remove WorkChest (contents dropped) |
-| `/wflang <code>` | Set language: `en` `tr` `de` `fr` `es` |
-| `/wfeconomy ...` | Economy admin commands |
-| `/wfconfig list` | Show current settings for every optional module |
-| `/wfconfig set <module> <key> <value>` | Tune or toggle a module (see below) |
-| `/wfconfig reload` \| `save` | Reload/save the feature config file |
+Collect nearby experience automatically.
+
+Features:
+
+- Copper
+- Iron
+- Gold
+- Diamond
+- Netherite
+
+Each tier increases:
+
+- Collection range
+- XP storage capacity
+- Future upgrade potential
 
 ---
 
-## WorkChest System
+# Advanced Furnaces
 
-When you run `/wffill` or `/wfbreak`, a **chest automatically spawns** near you in a safe location.
+Six furnace tiers are included:
 
-### Fill mode (`/wffill <block>`)
-- Place the blocks you want to fill with **in the WorkChest** (in order).
-- The mod consumes blocks from the chest instead of your inventory.
-- If the chest runs out, the job **pauses** — restock and `/wfresume`.
-- If the target position already has a block, it is **broken first** using a tool from your inventory (or WorkChest), and the drops go back to the WorkChest.
+- Copper Furnace
+- Iron Furnace
+- Gold Furnace
+- Diamond Furnace
+- Emerald Furnace
+- Netherite Furnace
 
-### Break mode (`/wfbreak`)
-- Place **tools** (pickaxe, shovel, axe, etc.) in the WorkChest.
-- The mod uses the appropriate tool for each block type.
-- **All drops go into the WorkChest** (overflow drops to the world).
-- If a tool breaks, the job pauses — replace it and `/wfresume`.
-
-### Important
-- Do NOT break the WorkChest while a job is running — the job will pause.
-- Use `/wfchest remove` to safely remove it when done.
+Each furnace offers improved performance while remaining balanced for survival gameplay.
 
 ---
 
-## Selection
+# Storage
 
-- Left-click with the **Selection Axe** → Pos1 (the block you hit)
-- Right-click with the **Selection Axe** → Pos2 (the block you click)
-- `/wfpos1` and `/wfpos2` also target the **block you're looking at** (not your feet)
+## WorkChest
 
-Once both corners are selected, a **particle wireframe outline** appears around the region.  
-The outline disappears automatically when the job completes or is cancelled.
-
----
-
-## Languages
-
-Set your language with `/wflang <code>`:
-
-| Code | Language |
-|------|----------|
-| `en` | English (default) |
-| `tr` | Türkçe |
-| `de` | Deutsch |
-| `fr` | Français |
-| `es` | Español |
+- Advanced storage
+- Smart inventory organization
+- Expansion support
+- Future multiblock system
 
 ---
 
-## Pause / Resume / Cancel
+# Equipment
 
-The system auto-pauses when:
-- **Tool broke** (break mode or clear mode)
-- **WorkChest empty** (fill mode or break mode)
-- **Chunks unloaded** (move closer to the region)
-- **Player disconnected**
-
-Remaining blocks are saved as a **blueprint**. Use `/wfresume` to continue.  
-Use `/wfcancel` to cancel and save a blueprint, or `/wfblueprint clear` to discard.
+- Omnitools
+- Giant Tools
+- Sword Matrix
+- Utility items
+- Survival-focused recipes
 
 ---
 
-## Economy
+# Image System
 
-Optional economy integration. Operators can configure:
-
-```
-/wfeconomy toggle
-/wfeconomy set cost <amount>
-/wfeconomy set currency <name>
-/wfeconomy reload
-/wfeconomy save
-```
+- Block Art
+- Animated images
+- Image history
+- Map utilities
 
 ---
 
-## Farmer Robot
+# Customization
 
-- **Day:** works normally — harvests, replants, and deposits into its Farmer Chest.
-- **Night:** returns to its chest and idles beside it, then resumes automatically the next morning.
-- **Rain:** keeps working right through it.
-- **Thunderstorm:** pauses and waits beside the chest until it passes.
-- **Full chest:** pauses harvesting the moment its Farmer Chest has no room left — nothing is ever destroyed or dropped — and resumes automatically as soon as space frees up.
+CatBot supports:
 
-This behavior can be turned off with `/wfconfig set farmer daynightenabled false` (see Feature Config below), which restores the old day-and-weather-agnostic robot. The full-chest pause is not tied to that switch — it always applies.
+- Multiple appearances
+- Hair colors
+- Cosmetic customization
 
 ---
 
-## Feature Config
+# Performance
 
-Every optional module (Farmer Robot, Magnet, Furnaces, Veinminer, Grook,
-internet image placement, WFVault, MegaChest, chunk safety, selection
-particle outline) can be toggled or tuned live by an operator, persisted at
-`config/worldforge/worldforge_features.json`. Economy and omnitool
-durability keep their own separate config files/commands (`/wfeconomy`,
-`/wfdurability`).
+Designed with large survival worlds in mind.
 
-```
-/wfconfig list
-/wfconfig set farmer enabled false
-/wfconfig set farmer searchradius 12
-/wfconfig set farmer harvestdistance 2.5
-/wfconfig set farmer rescaninterval 10
-/wfconfig set farmer seedreserve 1       # minimum seeds per type always kept for future planting
-/wfconfig set farmer daynightenabled false  # disable night/thunderstorm shelter-at-chest behavior
-/wfconfig set magnet enabled false
-/wfconfig set furnace speedstep 2        # 1 = vanilla speed, higher = faster
-/wfconfig set veinminer enabled false
-/wfconfig set veinminer reach 10
-/wfconfig set grook enabled false
-/wfconfig set grook maxreach 16
-/wfconfig set grook maxleaves 200
-/wfconfig set image enabled false
-/wfconfig set image maxdownloadmb 10
-/wfconfig set image timeoutseconds 15
-/wfconfig set vault enabled false
-/wfconfig set megachest enabled false
-/wfconfig set chunksafety enabled false   # requires a restart to take effect
-/wfconfig set particle outlineenabled false
-/wfconfig reload
-/wfconfig save
-```
-
-Disabling a module doesn't remove its blocks/items/entities from the world —
-it just turns off that module's behavior (interactions, event handlers, or
-AI goals) so nothing already placed gets orphaned or corrupted.
+- Optimized ticking
+- Cached systems
+- Efficient entity logic
+- Low server overhead
 
 ---
 
-## Known Issues (MC 26.2 port, MegaChest)
+# Requirements
 
-**Texture continuity (Seçenek A, final):** `buildMesh()` no longer tiles or
-wraps the texture per cell at all. The virtual UV canvas passed to
-`LayerDefinition.create(...)` is now sized to the *exact* pixel dimensions
-of the current MegaChest (`w*16 × h*16`, `d*16 × h*16`), and each block's
-`texOffs` is simply `bx*16`/`bz*16`/`by*16` into that canvas — mathematically
-identical to `u0=bx/width, u1=(bx+1)/width`. There is no modulo, no
-wraparound, no repeat: the actual texture file is stretched exactly once
-across the whole structure, however large it is.
-
-The unavoidable tradeoff (a real GPU/asset limitation, not something the
-renderer code can work around): if `mega_chest.png` / `mega_chest_frame.png`
-stay at their current small resolution, large MegaChests will show a
-visibly blurred/pixelated version of the design, since a small texture is
-being stretched over a large area. To get a crisp look at scale, redraw
-those two textures at a much higher resolution (512×512 or 1024×1024) —
-detail density will then scale with structure size instead of blurring.
-
-The MegaChest renderer and its opening logic were ported to 26.2's reworked
-rendering/container APIs by cross-referencing `javap` output against the
-target `client.jar`, since 26.2 changed several relevant classes (block
-entity render-state architecture, `RenderType` factories, texture atlas
-access, and the `Container` interface). Everything below compiles against
-the confirmed API surface, but two points still rest on an assumption that
-hasn't been independently verified against `client.jar` and should be
-checked before release:
-
-- `MegaChestBlockEntity#tick` now derives "is anyone looking at this chest"
-  from `getEntitiesWithContainerOpen()` instead of the removed `openCount`
-  field. This assumes that method is available on the `WFVaultBlockEntity` →
-  `BaseContainerBlockEntity` chain, not only on `ChestBlockEntity`.
-- `MultiVaultContainer#startOpen/stopOpen` now implement
-  `Container.startOpen(ContainerUser)` / `stopOpen(ContainerUser)` (the 26.2
-  signature, replacing `Player`). This assumes `Player` implements
-  `ContainerUser`.
-- `MegaChestBlockEntity#getRenderBoundingBox()` was removed outright (no
-  longer present on `BlockEntity` in 26.2); custom multiblock frustum
-  culling now relies solely on the distance check in
-  `MegaChestRenderer#shouldRender`, so very large structures may get
-  culled slightly earlier/later near screen edges than before.
-
-If `./gradlew build` still fails on any of the three points above, that's
-the first place to check.
+- Minecraft 26.2
+- Fabric Loader 0.19.3+
+- Fabric API
+- GeckoLib 5.5.3
+- Java 21
 
 ---
 
-## Building
+# Installation
 
-GeckoLib 5.5.3 for MC 26.2 isn't on GeckoLib's Maven yet, so download the
-Fabric jar manually (CurseForge or Modrinth, "GeckoLib Fabric 26.2 5.5.3")
-and place it at `libs/geckolib-fabric-26.2-5.5.3.jar` before building.
-
-```bash
-./gradlew build
-```
-
-Requires JDK 25. Output: `build/libs/worldforge.jar` (version lives in
-`fabric.mod.json`, not the filename).
+1. Install Fabric Loader.
+2. Install Fabric API.
+3. Install GeckoLib.
+4. Place `WorldForge.jar` into the `mods` folder.
+5. Launch Minecraft.
 
 ---
 
-## Compatibility Evidence
+# Development
 
-- ✅ **Minecraft 26.2**: Official Fabric blog confirms 26.2 support (Jun 2026)
-- ✅ **Fabric Loader 0.19.3**: Confirmed current stable for 26.2 (fabricmc.net/2026/06/15/262.html)
-- ✅ **Fabric API 0.154.0+26.2**: Available on CurseForge & Modrinth
-- ✅ **Java 25**: Required by MC 26.1+; confirmed by Fabric blog
-- ✅ **Loom 1.17**: Required for 26.2 dev environment
-- ✅ **Server-only**: No Blaze3D/Vulkan client-rendering code used (safe for 26.2 renderer changes)
+- Java 21
+- Fabric API
+- GeckoLib 5.5.3
 
 ---
 
-*WorldForge by Doshu — https://doshu.gamer.gd*
+# License
+
+See the LICENSE file for details.
