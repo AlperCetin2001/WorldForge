@@ -134,7 +134,7 @@ Designed with large survival worlds in mind.
 
 # Development
 
-- Java 21
+- Java 25
 - Fabric API
 - GeckoLib 5.5.3
 
