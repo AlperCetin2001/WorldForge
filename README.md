@@ -1,294 +1,290 @@
-<div align="center">
+# WorldForge v1.0
 
-# ⚒️ WorldForge
-
-**Hayatta kalma moduna uygun, dev ölçekli bir dünya düzenleme ve otomasyon araç seti.**
-
-Fabric • Minecraft 26.2 • Java 25 • GeckoLib 5
-
-[![License: CC0-1.0](https://img.shields.io/badge/license-CC0--1.0-lightgrey.svg)](LICENSE)
-[![Fabric](https://img.shields.io/badge/mod%20loader-Fabric-3f4e5a)](https://fabricmc.net)
-[![Minecraft](https://img.shields.io/badge/minecraft-26.2-brightgreen)](https://minecraft.net)
-
-</div>
+**Author:** Doshu  
+**Website:** https://github.com/AlperCetin2001/WorldForge  
+**Target:** Minecraft 26.2 · Fabric Loader 0.19.3 · Java 25  
+**Fabric API:** 0.154.0+26.2 · Loom 1.17.13
 
 ---
 
-## İçindekiler
+## Overview
 
-- [WorldForge Nedir?](#worldforge-nedir)
-- [Öne Çıkan Özellikler](#öne-çıkan-özellikler)
-  - [Dünya Düzenleme (WorldEdit-tarzı)](#-dünya-düzenleme-worldedit-tarzı)
-  - [CatBot — Akıllı NPC Yoldaş](#-catbot--akıllı-npc-yoldaş)
-  - [FarmerRobot — Otonom Çiftçi](#-farmerrobot--otonom-çiftçi)
-  - [wfbuild — Prosedürel Yapı Motoru](#-wfbuild--prosedürel-yapı-motoru)
-  - [6 Katmanlı Fırın Serisi](#-6-katmanlı-fırın-serisi)
-  - [XP Collector](#-xp-collector)
-  - [Sword Matrix](#-sword-matrix)
-  - [Omnitool & Madencilik Araçları](#-omnitool--madencilik-araçları)
-  - [WFVault & MegaChest](#-wfvault--megachest)
-  - [Magnet Link](#-magnet-link)
-  - [Görsel → Map-Art Yerleştirme](#-görsel--map-art-yerleştirme)
-  - [Litematica Şematik Desteği](#-litematica-şematik-desteği)
-  - [Ekonomi Entegrasyonu](#-ekonomi-entegrasyonu)
-  - [Config GUI & Çoklu Dil](#-config-gui--çoklu-dil)
-- [Komut Listesi](#komut-listesi)
-- [Mimari Genel Bakış](#mimari-genel-bakış)
-- [Kurulum](#kurulum)
-- [Bağımlılıklar](#bağımlılıklar)
-- [Uyumluluk](#uyumluluk)
-- [Geliştirme](#geliştirme)
-- [Katkıda Bulunma](#katkıda-bulunma)
-- [Lisans](#lisans)
+WorldForge is a large survival-friendly toolkit mod built around a WorldEdit-style region editor (select, fill, break — with full economy integration, pause/resume, chunk safety, and a WorkChest system), plus a wide set of standalone feature modules layered on top.
 
 ---
 
-## WorldForge Nedir?
+## Feature Overview
 
-**WorldForge**, hayatta kalma modunda WorldEdit'in gücünü sunan tek bir modda toplanmış, birbirinden çoğunlukla bağımsız çalışabilen **~15 alt sistemden** oluşan büyük bir araç setidir. Toplu bölge düzenlemeden akıllı NPC yoldaşlara, prosedürel bina üretiminden çok katmanlı fırın serilerine kadar geniş bir yelpazeyi kapsar. Tüm ağır işlemler **tick tabanlı bir zamanlayıcı** üzerinden kademeli olarak yürütülür; böylece binlerce bloklu operasyonlar bile sunucuyu dondurmaz.
-
-- **Mod ID:** `worldforge`
-- **Ana sınıf:** `com.worldforge.WorldForgeMod`
-- **~290 Java kaynak dosyası**, 15+ bağımsız alt sistem
-- **500+ JSON tanımlı** stil/dekorasyon/yapı varyantı (`wfbuild`)
-- **5 dil desteği:** İngilizce, Türkçe, Almanca, Fransızca, İspanyolca
+| Module | What it does |
+|--------|--------------|
+| **Region Editing** | `/wfpos1`/`/wfpos2` selection, `/wffill`, `/wfbreak`, `/wfclear`, undo, blueprint pause/resume, chunk-safe, economy-priced |
+| **WorkChest / WFVault / MegaChest** | Auto-spawning chests for bulk jobs; searchable multi-page WFVault storage; multiblock MegaChest (L/T/+ footprints, one shared lid-opening animation across the whole structure) for large-volume drops |
+| **CatBot** | GeckoLib-animated companion with cat/humanoid form switching, `/wfcat gui` customization (form, gender, hair, size, live 3D preview), cooldown-based respawn |
+| **FarmerRobot** | Autonomous crop harvesting: smart farm detection (BFS flood-fill), incremental farm-cache updates, seed reserve management, crop priority, day/night & weather-aware behavior, optional Selection Area work-area boundary. Also doubles as the **Lumberjack Bot** work mode — clears whole trees (including tall jungle giants) from the ground without climbing, with its own "Logger Bot" look |
+| **wfbuild** | Procedural structure/building generator with 500+ decoration, style, and structure-type variants (data-driven JSON), live ghost-block hologram previews during construction |
+| **Furnaces** | 6-tier furnace line (Copper → Netherite) with per-tier cooking speed multipliers and multi-lane GUIs |
+| **VeinMiner / VeinAxe / VeinTool / Excavator / Omnitool** | Tiered mining tools (Copper → Netherite/Emerald) with vein-following and area-mining, live line-outline previews before breaking |
+| **Grook** | Leaf/foliage clearing tool with configurable reach and max-leaves cap |
+| **Magnet Link** | Remote item transfer between chests/players |
+| **Image Placement** | Downloads an internet image and places it as in-world map art |
+| **Litematica Support** | Import/export schematics compatible with Litematica |
+| **Tutorial Book** | Clickable, categorized in-game command reference (`/wf...` commands) with bilingual hover text |
+| **Config GUI** | In-game key-bound config screen; every optional module toggleable/tunable live via `/wfconfig`, persisted to `worldforge_features.json` |
+| **Localization** | English, Turkish, German, French, Spanish |
 
 ---
 
-## Öne Çıkan Özellikler
+## Commands
 
-### 🧱 Dünya Düzenleme (WorldEdit-tarzı)
+| Command | Description |
+|---------|-------------|
+| `/wfpos1` | Set Pos1 at the **block you're looking at** (raycast) |
+| `/wfpos2` | Set Pos2 at the **block you're looking at** |
+| `/wfpos1 <x> <y> <z>` | Set Pos1 at explicit coordinates |
+| `/wfpos2 <x> <y> <z>` | Set Pos2 at explicit coordinates |
+| `/wfselection` | Show current selection info |
+| `/wfclear` | Clear all blocks in selection (fill with air, no drops) |
+| `/wffill <block>` | Fill selection with a block (uses **WorkChest**) |
+| `/wfbreak` | **Break** all blocks in selection (drops go to **WorkChest**) |
+| `/wfcancel` | Cancel active job (saves blueprint) |
+| `/wfresume` | Resume from saved blueprint |
+| `/wfblueprint info` | View saved blueprint status |
+| `/wfblueprint clear` | Delete saved blueprint |
+| `/wffluid preserve\|dry` | Fluid handling mode |
+| `/wfchest` | Show WorkChest location |
+| `/wfchest remove` | Remove WorkChest (contents dropped) |
+| `/wflang <code>` | Set language: `en` `tr` `de` `fr` `es` |
+| `/wfeconomy ...` | Economy admin commands |
+| `/wfconfig list` | Show current settings for every optional module |
+| `/wfconfig set <module> <key> <value>` | Tune or toggle a module (see below) |
+| `/wfconfig reload` \| `save` | Reload/save the feature config file |
 
-Survival'a uygun, ekonomi destekli toplu blok düzenleme araç seti:
+---
 
-- **Bölge seçimi & kopyala-yapıştır** — axe ile seçim, `//copy`/`//paste` benzeri iş akışı (`selection`, `clipboard`)
-- **Doldurma / kırma / değiştirme** — `wffill`, `wfbreak`, `wfreplace`, `wffillair`, `wffillsolid`
-- **Şekil araçları** — küre, silindir, piramit gibi geometrik formlar (`shape`)
-- **Fırça & arazi düzenleme** — brush tabanlı terrain sculpting (`brush`, `terrain`)
-- **Eğri/çizgi çizimi** — `wfline`, `wfcurve`
-- **Genişletme/daraltma/kaydırma** — `wfexpand`, `wfcontract`, `wfshift`, `wfhollow`, `wfsmooth`, `wfcut`, `wfclear`
-- **Sınırsız geri al / ileri al** — `wfundo` / `wfredo`, blok bazlı değişiklik kaydı ve ekonomi iadesi ile
-- **Canlı hologram önizlemesi** — her operasyon gerçek bloklar yerleşmeden önce "hayalet blok" önizlemesi gösterir
-- **Chunk güvenliği** — büyük işlemler öncesi otomatik anlık görüntü (`/wfundo` ile geri alınabilir güvenlik snapshotu)
-- **WorkChest entegrasyonu** — malzemeler envanterden değil, bağlı kasalardan çekilir
+## WorkChest System
 
-### 🐱 CatBot — Akıllı NPC Yoldaş
+When you run `/wffill` or `/wfbreak`, a **chest automatically spawns** near you in a safe location.
 
-GeckoLib ile animasyonlu, kedi ve insansı (humanoid) formları olan özelleştirilebilir bir arkadaş NPC:
+### Fill mode (`/wffill <block>`)
+- Place the blocks you want to fill with **in the WorkChest** (in order).
+- The mod consumes blocks from the chest instead of your inventory.
+- If the chest runs out, the job **pauses** — restock and `/wfresume`.
+- If the target position already has a block, it is **broken first** using a tool from your inventory (or WorkChest), and the drops go back to the WorkChest.
 
-- **İki form:** Cat (kedi) ve Humanoid, sorunsuz form geçişi
-- **Özelleştirme:** göz rengi (`IrisColor`), tüy/saç rengi (`CatHairColor`), cinsiyet (`CatGender`)
-- **Ses sistemi:** durum bazlı miyavlama/idle sesleri (`CatBotSounds`) + opsiyonel TTS (`CatTtsService`)
-- **LLM entegrasyonu:** `/wfcat ask` komutuyla CatBot'a doğal dilde soru sorulabilir (`CatAskService`)
-- **LLM destekli inşa:** aynı LLM altyapısı `/wfbuild` için de kullanılıp serbest metinden özel yapı üretebilir (`CatBuildLlmService`)
-- **Goal tabanlı davranış:** `SmartNavigator`, sahibine yaklaşma/dönme, iş alanında dolaşma
-- **Otomatik yeniden doğma:** `CatRespawnScheduler` ile ölüm sonrası zamanlanmış respawn
+### Break mode (`/wfbreak`)
+- Place **tools** (pickaxe, shovel, axe, etc.) in the WorkChest.
+- The mod uses the appropriate tool for each block type.
+- **All drops go into the WorkChest** (overflow drops to the world).
+- If a tool breaks, the job pauses — replace it and `/wfresume`.
 
-### 🌾 FarmerRobot — Otonom Çiftçi
+### Important
+- Do NOT break the WorkChest while a job is running — the job will pause.
+- Use `/wfchest remove` to safely remove it when done.
 
-Fabric `PathfinderMob` + GeckoLib tabanlı, tarlaları otomatik tarayıp hasat eden bir robot *(aktif geliştirme alanı)*:
+---
 
-- **Akıllı tarla algılama** (`FarmerFarmDetector`) ve **ekin önceliklendirme** (`FarmerCropPriority`)
-- **Goal yığını:** gece/fırtınada kasaya sığınma → dinlenme → hasat → kasaya dönüş/dolaşma → ürün bırakma → boşta bakınma
-- **Durum makinesi** (`FarmerRobotStatus`): `WORKING`, `IDLE`, `WAITING_FOR_SEEDS`, `CHEST_MISSING`, `NO_CROPS`, `SHELTERING`, `CHEST_FULL`, `RESTING`
-- **FarmerChest entegrasyonu** — hasat edilen ürünler doğrudan bağlı kasaya depolanır
-- **Kendi GUI ekranı** ile durum takibi
+## Selection
 
-### 🏗️ wfbuild — Prosedürel Yapı Motoru
+- Left-click with the **Selection Axe** → Pos1 (the block you hit)
+- Right-click with the **Selection Axe** → Pos2 (the block you click)
+- `/wfpos1` and `/wfpos2` also target the **block you're looking at** (not your feet)
 
-Modun en büyük ve en karmaşık alt sistemi (~75+ dosya): tek bir komuttan veya doğal dil açıklamasından tam teşekküllü binalar üretir.
+Once both corners are selected, a **particle wireframe outline** appears around the region.  
+The outline disappears automatically when the job completes or is cancelled.
 
-**13 aşamalı boru hattı:**
+---
+
+## Languages
+
+Set your language with `/wflang <code>`:
+
+| Code | Language |
+|------|----------|
+| `en` | English (default) |
+| `tr` | Türkçe |
+| `de` | Deutsch |
+| `fr` | Français |
+| `es` | Español |
+
+---
+
+## Pause / Resume / Cancel
+
+The system auto-pauses when:
+- **Tool broke** (break mode or clear mode)
+- **WorkChest empty** (fill mode or break mode)
+- **Chunks unloaded** (move closer to the region)
+- **Player disconnected**
+
+Remaining blocks are saved as a **blueprint**. Use `/wfresume` to continue.  
+Use `/wfcancel` to cancel and save a blueprint, or `/wfblueprint clear` to discard.
+
+---
+
+## Economy
+
+Optional economy integration. Operators can configure:
 
 ```
-Intent → Blueprint → Architecture → Style → Theme → Material Resolver
-       → Palette → Decoration Resolver → Decoration Variants
-       → Resource Logic → Validation → Planner → Builder
+/wfeconomy toggle
+/wfeconomy set cost <amount>
+/wfeconomy set currency <name>
+/wfeconomy reload
+/wfeconomy save
 ```
-
-- **İki niyet ayrıştırıcı:** kural tabanlı `KeywordIntentParser` ve LLM tabanlı `LlmIntentParser`
-- **500+ stil/dekorasyon JSON dosyası** — ~400 malzeme teması (ör. `ashen_spire`, `azure_boathouse`) + ~35 kültürel/estetik dekorasyon teması (Japon, Gotik, Cyberpunk, Viktoryen, vb.)
-- **Mimari üreticiler:** temel, iskelet, duvar, çatı, kolon, merdiven, balkon, kapı/pencere boşlukları, dekorasyon
-- **Bağımsız peyzaj öğeleri:** çeşme, havuz, koi göleti, bambu bahçesi, heykel, çit, lamba direği, kamp ateşi alanı, çiçek yatağı, kuyu, bahçe, yol
-- **Biome'a duyarlı stil değişimi** (`BiomeStyleModifier`)
-- **Yerleştirme öncesi doğrulama** (`ConstructionValidationEngine`) ve canlı hologram önizlemesi
-- `/wfbuild` (CatBuildCommand) üzerinden veya CatBot'a doğal dilde tarif ederek tetiklenir
-
-### 🔥 6 Katmanlı Fırın Serisi
-
-Vanilla `AbstractFurnaceBlock`'u genişleten, her metal seviyesi için tam bağımsız blok/entity/menü/ekran seti sunan özel fırın hattı:
-
-| Katman | Varsayılan Dayanıklılık* |
-|---|---|
-| Copper | 1.300 |
-| Iron | 2.100 |
-| Gold | 4.500 |
-| Diamond | 6.500 |
-| Emerald | 9.500 |
-| Netherite | 15.000 |
-
-*Alet dayanıklılığı, aynı dosyadaki `OmnitoolMaterial` sınıfına aittir; fırınlar için çoklu giriş/yakıt hattı (vanilla'nın tek-slot modelinin ötesinde) sunulur, admin `/wfdurability` ile çalışma zamanında değerleri ayarlayabilir.
-
-### ⭐ XP Collector
-
-Katmanlı (Copper → Netherite) deneyim puanı toplama/depolama blokları — yakındaki XP orb'larını otomatik emer ve depolar, oyuncu ihtiyaç duyduğunda geri verir.
-
-### ⚔️ Sword Matrix
-
-Birden fazla kılıcı tek bir güçlü silahta birleştirmeye yarayan özel bir menü/hesaplama sistemi (`SwordMatrixCalculator`, `SwordMatrixInventory`) — kendi GUI'si, tamir kancaları (`SwordMatrixRepairHooks`) ve tooltip önizlemesi ile.
-
-### ⛏️ Omnitool & Madencilik Araçları
-
-- **Omnitool** — 8 katmanlı (Wood → Netherite) çok işlevli alet, tek eşyada birden fazla alet türünün işlevini birleştirir
-- **VeinMiner / VeinAxe / VeinTool** — bağlı blokları/ağaçları toplu kırma, canlı sınır (outline) önizlemesiyle
-- **Excavator** — alan bazlı kazı aracı
-- **Grook** — sneak + kırma ile yaprak temizleme
-- **Dayanıklılık sistemi** — `DurabilityConfig` ile admin tarafından `/wfdurability` üzerinden runtime'da ayarlanabilir
-
-### 📦 WFVault & MegaChest
-
-- **WFVault** — sayfalanmış, kategorilere ayrılmış (`ItemCategory`), sunucu tarafı gerçek zamanlı aramalı dev depolama kasası
-- **MegaChest** — L/T/+ şekilli inşa edilebilir çoklu blok sandık, paylaşımlı kapak animasyonu ve dinamik UV doku sistemi, 216 slot; büyük hacimli drop'lar için ideal
-- **WorkChestManager** — dünya düzenleme operasyonlarının malzeme kaynağı olarak kasaları kullanmasını sağlar
-
-### 🧲 Magnet Link
-
-İki nokta arasında koordinat tabanlı (canlı referans gerektirmeyen), görsel bir kurye entity (`MagnetCarrierEntity`) ile temsil edilen uzak envanter/kaynak transfer sistemi.
-
-### 🖼️ Görsel → Map-Art Yerleştirme
-
-İnternetten bir görsel URL'si indirip (ana thread'i bloklamadan async) haritalara veya item-frame'lere piksel piksel basma (`MapArtPlacer`), istemci tarafı önizleme ekranı ile.
-
-### 📐 Litematica Şematik Desteği
-
-Litematica `.litematic` dosyalarını okuma, indirme ve modun kendi clipboard sistemine köprüleme (`LitematicaReader`).
-
-### 💰 Ekonomi Entegrasyonu
-
-Vault-uyumlu üçüncü parti ekonomi modlarına reflection tabanlı soft-dependency ile bağlanan `VaultEconomyBridge`; dünya düzenleme operasyonları blok başına ücretlendirilebilir, geri alma işlemlerinde iade edilir.
-
-### ⚙️ Config GUI & Çoklu Dil
-
-- **`FeatureConfig`** — admin'in her alt sistemi ayrı ayrı açıp kapatabildiği merkezi switchboard
-- **Canlı config senkronizasyonu** — Request/Set/Sync network payload deseni ile istemci-sunucu arası anlık güncelleme
-- **5 dil:** `en_us`, `tr_tr`, `de_de`, `fr_fr`, `es_es` — `/wflang` ile değiştirilebilir
-- **Tıklanabilir öğretici kitap** (`WFTutorialBook`) — `/wfbook`
 
 ---
 
-## Komut Listesi
+## Farmer Robot
 
-<details>
-<summary>Tüm <code>/wf*</code> komutlarını görmek için tıklayın</summary>
+- **Day:** works normally — harvests, replants, and deposits into its Farmer Chest.
+- **Night:** returns to its chest and idles beside it, then resumes automatically the next morning.
+- **Rain:** keeps working right through it.
+- **Thunderstorm:** pauses and waits beside the chest until it passes.
+- **Full chest:** pauses harvesting the moment its Farmer Chest has no room left — nothing is ever destroyed or dropped — and resumes automatically as soon as space frees up.
 
-| Komut | Açıklama |
-|---|---|
-| `/wfselection` | Bölge seçimi araçları |
-| `/wfcopy` / `/wfpaste` | Kopyala / yapıştır |
-| `/wfundo` / `/wfredo` | Geri al / ileri al |
-| `/wffill` / `/wffillair` / `/wffillsolid` | Doldurma varyantları |
-| `/wfbreak` | Toplu blok kırma |
-| `/wfreplace` | Blok değiştirme |
-| `/wfshape` | Geometrik şekil çizimi |
-| `/wfline` / `/wfcurve` | Çizgi / eğri çizimi |
-| `/wfexpand` / `/wfcontract` / `/wfshift` | Seçim boyutlandırma/taşıma |
-| `/wfhollow` / `/wfsmooth` / `/wfcut` / `/wfclear` | Ek düzenleme işlemleri |
-| `/wfbuild` | Prosedürel yapı üretimi |
-| `/wfblueprint` | Blueprint yönetimi |
-| `/wfcat` | CatBot etkileşimi (`ask` dahil) |
-| `/wfschematic` | Litematica şematik içe/dışa aktarma |
-| `/wfimgselection` | Görsel → map-art seçim aracı |
-| `/wfchest` | Kasa yönetimi |
-| `/wffluid` | Akışkan (su/lava) araçları |
-| `/wfdurability` | Alet/fırın dayanıklılık ayarları (admin) |
-| `/wfeconomy` | Ekonomi ayarları (admin) |
-| `/wfconfig` | Config GUI açma (admin) |
-| `/wflang` | Dil değiştirme |
-| `/wfbook` | Öğretici kitabı açma |
-| `/wfapi` | LLM/API bağlantı ayarları |
-| `/wfcancel` / `/wfresume` | Devam eden işlemi durdurma/sürdürme |
+This behavior can be turned off with `/wfconfig set farmer daynightenabled false` (see Feature Config below), which restores the old day-and-weather-agnostic robot. The full-chest pause is not tied to that switch — it always applies.
 
-</details>
+### Lumberjack Bot
+
+A second job for the same robot, chest, and GUI infrastructure — chops nearby trees instead of harvesting crops, walking itself across an entire connected tree one log at a time until none are left in range.
+
+Two ways to spawn one:
+
+1. **Totem:** place a pumpkin on top of any log, then right-click the pumpkin with any axe. Both blocks are cleared and replaced by a fresh chest + robot.
+2. **Spawn item:** craft a Lumberjack Robot Spawn Item — log on the bottom, carved pumpkin in the middle, any axe on top — then right-click any block with it. Works the same as the Farmer Robot Spawn Item (re-links to an orphaned chest if one already exists at the clicked position).
+
+Either way, the robot comes with its own chest and gets a distinct "Logger Bot" appearance (green beanie, plaid shirt, tree-emblem chest plate) instead of the default Farmer Robot look — everything else (GUI, Pause/Resume, day/night shelter, Pick Up Robot, Selection Area work-area boundary) is identical to the Farmer Robot.
+
+Chops a whole tree from the ground without climbing: the chop-reach check is horizontal-only (distance to the trunk column), with a separate, configurable vertical allowance (`lumberjackVerticalChopRadius`, default 50) — so the robot clears an entire trunk, including the tallest 4-sapling jungle-style giants, log by log from where it's standing at the base.
+
+### Work Area (Selection Area Tool 1/2)
+
+Both the Farmer and Lumberjack Bot support an optional rectangular work-area boundary, on top of their default chest-centered range. The first robot a player spawns comes with a green (corner 1) and red (corner 2) Selection Area Tool — right-click-place each one at the corners you want, and that robot (Farmer or Lumberjack) never harvests/chops outside the marked rectangle. The boundary is X/Z only (Y is unconstrained, for multi-level farms/tall trees). No area marked — or only one corner — falls straight back to the old chest-centered behavior automatically. More tools can be requested from the robot's own GUI.
 
 ---
 
-## Mimari Genel Bakış
+## Feature Config
+
+Every optional module (Farmer Robot, Lumberjack Bot, Magnet, Furnaces, Veinminer, Grook,
+internet image placement, WFVault, MegaChest, chunk safety, selection
+particle outline) can be toggled or tuned live by an operator, persisted at
+`config/worldforge/worldforge_features.json`. Economy and omnitool
+durability keep their own separate config files/commands (`/wfeconomy`,
+`/wfdurability`).
 
 ```
-com.worldforge
-├── WorldForgeMod.java          # Ana giriş noktası
-├── farmer/                     # Farmer Robot
-├── catbot/                     # CatBot NPC + LLM entegrasyonu
-├── wfbuild/                    # Prosedürel bina üretim motoru (13 aşamalı pipeline)
-├── furnace/                    # 6 katmanlı özel fırın sistemi
-├── xpcollector/                # Katmanlı XP toplama/depolama blokları
-├── swordmatrix/                # Kılıç birleştirme sistemi
-├── vault/, chest/               # WFVault, MegaChest, WorkChestManager
-├── resourcelogic/, builder/op/  # JSON tabanlı blok kuralları + düşük seviye operasyonlar
-├── tool/                        # Omnitool, VeinMiner, Grook, dayanıklılık
-├── magnet/                      # Magnet Link uzak transfer
-├── image/                       # Görsel → map-art yerleştirme
-├── schematic/                   # Litematica desteği
-├── selection/, clipboard/, undo/ # Seçim, kopyala-yapıştır, geri alma
-├── veinminer/, grook/, destruction/ # Alan kırma + alet-blok eşleştirme
-├── config/, economy/, permission/   # Config, ekonomi köprüsü, izinler
-├── hologram/, particle/, chunk/     # Önizleme, sınır efektleri, chunk güvenliği
-├── placement/                   # TickedTaskScheduler — merkezi iş kuyruğu
-├── i18n/                        # 5 dilli çeviri erişimi
-└── command/                     # Komut kayıtları
+/wfconfig list
+/wfconfig set farmer enabled false
+/wfconfig set farmer searchradius 12
+/wfconfig set farmer harvestdistance 2.5
+/wfconfig set farmer rescaninterval 10
+/wfconfig set farmer seedreserve 1       # minimum seeds per type always kept for future planting
+/wfconfig set farmer fatigueenabled true
+/wfconfig set farmer fatiguethreshold 12 # crops harvested in a row before resting
+/wfconfig set farmer restticks 200       # how long the robot rests once fatigued
+/wfconfig set farmer daynightenabled false  # disable night/thunderstorm shelter-at-chest behavior
+/wfconfig set lumberjack searchradius 16
+/wfconfig set lumberjack chopdistance 3
+/wfconfig set lumberjack rescaninterval 10
+/wfconfig set lumberjack verticalchopradius 50   # tallest trunk the robot clears from the ground, no climbing
+/wfconfig set lumberjack unreachablefailurethreshold 2
+/wfconfig set lumberjack unreachablecooldownticks 6000
+/wfconfig set magnet enabled false
+/wfconfig set furnace speedstep 2        # 1 = vanilla speed, higher = faster
+/wfconfig set veinminer enabled false
+/wfconfig set veinminer reach 10
+/wfconfig set grook enabled false
+/wfconfig set grook maxreach 16
+/wfconfig set grook maxleaves 200
+/wfconfig set image enabled false
+/wfconfig set image maxdownloadmb 10
+/wfconfig set image timeoutseconds 15
+/wfconfig set vault enabled false
+/wfconfig set megachest enabled false
+/wfconfig set chunksafety enabled false   # requires a restart to take effect
+/wfconfig set particle outlineenabled false
+/wfconfig reload
+/wfconfig save
 ```
 
-Alt sistemlerin her biri hakkında derinlemesine mimari dokümantasyon için [`docs/architecture/`](docs/architecture/README.md) klasörüne bakın — her dosya, ilgili alt sistemin sınıf sorumluluklarını, tasarım kararlarını ve veri akışını detaylandırır.
-
-Modun kalbinde **`TickedTaskScheduler`** bulunur: tüm büyük ölçekli operasyonlar (dünya düzenleme, wfbuild inşaatları) buraya kademeli görevler olarak kuyruğa alınır, chunk güvenliği kontrol edilir ve hologram önizlemesiyle senkronize çalışır.
+Disabling a module doesn't remove its blocks/items/entities from the world —
+it just turns off that module's behavior (interactions, event handlers, or
+AI goals) so nothing already placed gets orphaned or corrupted.
 
 ---
 
-## Kurulum
+## Known Issues (MC 26.2 port, MegaChest)
 
-1. [Fabric Loader](https://fabricmc.net/use/) ve [Fabric API](https://modrinth.com/mod/fabric-api) kurulu olmalı.
-2. [GeckoLib 5](https://modrinth.com/mod/geckolib) (≥ 5.5.3) kurulu olmalı.
-3. WorldForge `.jar` dosyasını `mods/` klasörüne kopyalayın.
-4. (Opsiyonel) JEI / REI / EMI ve Jade destekleniyor — kurulu ise otomatik entegre olur.
+**Texture continuity (Seçenek A, final):** `buildMesh()` no longer tiles or
+wraps the texture per cell at all. The virtual UV canvas passed to
+`LayerDefinition.create(...)` is now sized to the *exact* pixel dimensions
+of the current MegaChest (`w*16 × h*16`, `d*16 × h*16`), and each block's
+`texOffs` is simply `bx*16`/`bz*16`/`by*16` into that canvas — mathematically
+identical to `u0=bx/width, u1=(bx+1)/width`. There is no modulo, no
+wraparound, no repeat: the actual texture file is stretched exactly once
+across the whole structure, however large it is.
 
-## Bağımlılıklar
+The unavoidable tradeoff (a real GPU/asset limitation, not something the
+renderer code can work around): if `mega_chest.png` / `mega_chest_frame.png`
+stay at their current small resolution, large MegaChests will show a
+visibly blurred/pixelated version of the design, since a small texture is
+being stretched over a large area. To get a crisp look at scale, redraw
+those two textures at a much higher resolution (512×512 or 1024×1024) —
+detail density will then scale with structure size instead of blurring.
 
-| Bağımlılık | Sürüm |
-|---|---|
-| Fabric Loader | ≥ 0.19.3 |
-| Minecraft | ~26.2 |
-| Java | ≥ 21 |
-| Fabric API | * |
-| GeckoLib | ≥ 5.5.3 |
+The MegaChest renderer and its opening logic were ported to 26.2's reworked
+rendering/container APIs by cross-referencing `javap` output against the
+target `client.jar`, since 26.2 changed several relevant classes (block
+entity render-state architecture, `RenderType` factories, texture atlas
+access, and the `Container` interface). Everything below compiles against
+the confirmed API surface, but two points still rest on an assumption that
+hasn't been independently verified against `client.jar` and should be
+checked before release:
 
-**Önerilen (opsiyonel) modlar:** JEI, REI, EMI, Jade
+- `MegaChestBlockEntity#tick` now derives "is anyone looking at this chest"
+  from `getEntitiesWithContainerOpen()` instead of the removed `openCount`
+  field. This assumes that method is available on the `WFVaultBlockEntity` →
+  `BaseContainerBlockEntity` chain, not only on `ChestBlockEntity`.
+- `MultiVaultContainer#startOpen/stopOpen` now implement
+  `Container.startOpen(ContainerUser)` / `stopOpen(ContainerUser)` (the 26.2
+  signature, replacing `Player`). This assumes `Player` implements
+  `ContainerUser`.
+- `MegaChestBlockEntity#getRenderBoundingBox()` was removed outright (no
+  longer present on `BlockEntity` in 26.2); custom multiblock frustum
+  culling now relies solely on the distance check in
+  `MegaChestRenderer#shouldRender`, so very large structures may get
+  culled slightly earlier/later near screen edges than before.
 
-## Uyumluluk
+If `./gradlew build` still fails on any of the three points above, that's
+the first place to check.
 
-WorldForge; Sodium, Lithium, Iris, Continuity, Inventory Profiles Next, Xaero's Minimap, Backpacks!, Tree Vein Miner, Nature's Compass, Quick Leaf Decay, Mouse Tweaks ve Polymer tabanlı modlarla test edilmiş sunucularda sorunsuz çalışır.
+---
 
-## Geliştirme
+## Building
 
-Proje bir Gradle/Fabric Loom projesidir:
+GeckoLib 5.5.3 for MC 26.2 isn't on GeckoLib's Maven yet, so download the
+Fabric jar manually (CurseForge or Modrinth, "GeckoLib Fabric 26.2 5.5.3")
+and place it at `libs/geckolib-fabric-26.2-5.5.3.jar` before building.
 
 ```bash
 ./gradlew build
 ```
 
-Kaynak ağacı ~290 Java dosyası ve `src/main/resources` altında JSON tabanlı veri/varlık dosyalarından oluşur (özellikle `wfbuild` altında 500+ stil/dekorasyon JSON'u). Mimari kararların gerekçeleri için [`docs/architecture/design-decisions.md`](docs/architecture/design-decisions.md) dosyasına bakın.
-
-## Katkıda Bulunma
-
-Hata bildirimleri ve öneriler için [Issues](https://github.com/AlperCetin2001/WorldForge/issues) sayfasını kullanabilirsiniz.
-
-## Lisans
-
-Bu proje [CC0-1.0](LICENSE) lisansı ile yayınlanmıştır.
+Requires JDK 25. Output: `build/libs/worldforge.jar` (version lives in
+`fabric.mod.json`, not the filename).
 
 ---
 
-<div align="center">
+## Compatibility Evidence
 
-Geliştirici: **Doshu** — [doshu.gamer.gd](https://doshu.gamer.gd)
+- ✅ **Minecraft 26.2**: Official Fabric blog confirms 26.2 support (Jun 2026)
+- ✅ **Fabric Loader 0.19.3**: Confirmed current stable for 26.2 (fabricmc.net/2026/06/15/262.html)
+- ✅ **Fabric API 0.154.0+26.2**: Available on CurseForge & Modrinth
+- ✅ **Java 25**: Required by MC 26.1+; confirmed by Fabric blog
+- ✅ **Loom 1.17**: Required for 26.2 dev environment
+- ✅ **Server-only**: No Blaze3D/Vulkan client-rendering code used (safe for 26.2 renderer changes)
 
-</div>
+---
+
+*WorldForge by Doshu — https://github.com/AlperCetin2001/WorldForge*
