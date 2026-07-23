@@ -21,6 +21,7 @@ WorldForge is a large survival-friendly toolkit mod built around a WorldEdit-sty
 | **WorkChest / WFVault / MegaChest** | Auto-spawning chests for bulk jobs; searchable multi-page WFVault storage; multiblock MegaChest (L/T/+ footprints, one shared lid-opening animation across the whole structure) for large-volume drops |
 | **CatBot** | GeckoLib-animated companion with cat/humanoid form switching, `/wfcat gui` customization (form, gender, hair, size, live 3D preview), cooldown-based respawn |
 | **FarmerRobot** | Autonomous crop harvesting: smart farm detection (BFS flood-fill), incremental farm-cache updates, seed reserve management, crop priority, day/night & weather-aware behavior, optional Selection Area work-area boundary. Also doubles as the **Lumberjack Bot** work mode — clears whole trees (including tall jungle giants) from the ground without climbing, with its own "Logger Bot" look |
+| **Farming & Food** | 12 new farmable crops (Tomato, Cucumber, Onion, Lettuce, Corn, Rice, Garlic, Chili Pepper, Bell Pepper, Cabbage, Eggplant, Strawberry), each with its own seed item, 8-stage crop block, and harvested product; 38+ prepared dishes across Fast Food, Pizza, Döner, Sandwich, Breakfast, Fries, Chicken, Rice, Pasta, Soups, Salads, **Desserts** (Chocolate Cookie, Cake Slice, Apple/Strawberry Pie, Donut), and Drinks (Coffee, Tea, Orange/Apple Juice) |
 | **wfbuild** | Procedural structure/building generator with 500+ decoration, style, and structure-type variants (data-driven JSON), live ghost-block hologram previews during construction |
 | **Furnaces** | 6-tier furnace line (Copper → Netherite) with per-tier cooking speed multipliers and multi-lane GUIs |
 | **VeinMiner / VeinAxe / VeinTool / Excavator / Omnitool** | Tiered mining tools (Copper → Netherite/Emerald) with vein-following and area-mining, live line-outline previews before breaking |
@@ -161,6 +162,40 @@ Chops a whole tree from the ground without climbing: the chop-reach check is hor
 ### Work Area (Selection Area Tool 1/2)
 
 Both the Farmer and Lumberjack Bot support an optional rectangular work-area boundary, on top of their default chest-centered range. The first robot a player spawns comes with a green (corner 1) and red (corner 2) Selection Area Tool — right-click-place each one at the corners you want, and that robot (Farmer or Lumberjack) never harvests/chops outside the marked rectangle. The boundary is X/Z only (Y is unconstrained, for multi-level farms/tall trees). No area marked — or only one corner — falls straight back to the old chest-centered behavior automatically. More tools can be requested from the robot's own GUI.
+
+---
+
+## Farming & Food System
+
+### New Crops
+
+12 new farmable crops, each a full seed → 8-stage crop block → harvestable product chain (plant on farmland exactly like vanilla wheat):
+
+Tomato, Cucumber, Onion, Lettuce, Corn, Rice, Garlic, Chili Pepper, Bell Pepper, Cabbage, Eggplant, Strawberry.
+
+The FarmerRobot's crop-priority and smart farm detection recognize these alongside vanilla crops out of the box.
+
+### Prepared Food
+
+38+ cookable/craftable dishes (plain vanilla crafting-table/furnace/campfire recipes — no new machine required), grouped by category:
+
+| Category | Examples |
+|---|---|
+| Fast Food | Hamburger, Cheeseburger, Double Cheeseburger, Chicken/Fish Burger, Hot Dog |
+| Pizza | Cheese, Pepperoni, Chicken, Vegetable, Supreme (plus a Pizza Dough → Raw Pizza crafting stage) |
+| Döner | Chicken Döner, Meat Döner, Döner Wrap, Döner Plate |
+| Sandwich | Sandwich, Chicken/Steak/Cheese Sandwich |
+| Breakfast | Fried/Boiled Egg, Omelette, Toast, Cheese Toast |
+| Fries | French Fries, Loaded Fries, Potato Wedges |
+| Chicken | Fried Chicken, Chicken Wings/Nuggets, Roasted Chicken |
+| Rice | Rice Bowl, Chicken Rice, Vegetable Rice |
+| Pasta | Pasta, Spaghetti, Lasagna, Mac and Cheese |
+| Soups | Tomato, Vegetable, Chicken, Mushroom Soup |
+| Salads | Garden, Chicken, Greek Salad |
+| **Desserts** | Chocolate Cookie, Cake Slice, Apple Pie, Strawberry Pie, Donut |
+| Drinks | Coffee, Tea, Orange Juice, Apple Juice (bottled, stack-of-16 like Milk/Honey Bottle) |
+
+Nutrition/saturation scale with dish complexity — snacks and desserts sit low (2-3 nutrition), sandwiches mid (5-6), burgers/pizza high (6-9), full plates (Döner Plate, Lasagna) highest (8-10) — matching vanilla's own food value spread.
 
 ---
 
